@@ -31,18 +31,18 @@ def getTheHtml(driver):
 
 
 
-#I download videos by dozen
+#I download videos by dozen with a counter so when I load 12 videos more I start indexing in 12 and its multiples
 
-def download12(videosURL,counter):
+def downloadDozen(videosURL,counter):
     for i in range(counter*12,(counter+1)*12):
         try:
-            print("LEEER EL LINK QUE LLEGÓ: "+ videosURL[i].a["href"])
+            print("Reading the link: "+ videosURL[i].a["href"]+" video number: "+i)
             try:
                 downloadVideo(videosURL[i].a["href"],i)
             except:
-                print("Renovar código del CURLconverter")
+                print("Renew the code from CurlConverter") # Go to https://curlconverter.com/ manually get the network from SSStik.io which is the website where we delete the watermark
         except IndexError:
-            print("Fueron menos de 12 indexes :(")
+            print("Problem with indexes, probably just entered 1 hashtag but still should work, we may lose videos")
         #Because the server would get overloaded and think we are a bot (which we are LOL)
         #We are gonna set 12 seconds delay so it goes smoothly
         time.sleep(12) 
@@ -87,7 +87,7 @@ def downloadVideo(url,id):
     try:
         videoMP4= urlopen(downloadURL)
     except:
-        print("No se cargó el mp4 para descargar, problemas de conexión, excedió el timing.")
+        print("Could not load the MP4 file,probably internet problems, excedeed the timing.")
 
     with open(f"videos/{id}"+'.mp4',"wb") as output:
         while True:

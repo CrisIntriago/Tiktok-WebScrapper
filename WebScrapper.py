@@ -7,12 +7,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-#Counter to count dozens of videos
+#Counter to count sets of dozens of videos
 counter=0 
 #Importing beautifulSoup
 import bs4
 
-#Time to avoid problems while charging page
+#Time to avoid problems while charging page, we are going to use time.sleep() to avoid issues, yet we can still use implicitily wait from WebDriverWait
 import time
 
 
@@ -32,14 +32,14 @@ browser_options.add_argument("--mute-audio")
 
 
 driver= webdriver.Chrome(service=s,options=browser_options)
-time.sleep(5)
+time.sleep(2)
 driver.get("https://www.tiktok.com")
-#When i open i got to check if theres a login, sometimes there isn't but to avoid crashing
 
-##I can't click the quit button of the login, have to do it manually still.
+#When i open i got to check if theres a login, sometimes there isn't but to avoid crashing we'll handle it.
+#Here we close the popup of tiktok when we first enter the website, sometimes is not showed
 
 try:
-    btnPopUp = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="login-modal"]/div[2]')))
+    btnPopUp = WebDriverWait(driver, 7).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="login-modal"]/div[2]')))
     driver.execute_script("arguments[0].click();", btnPopUp)
     print("Closed the Popup succesfully")
 except:
@@ -61,47 +61,53 @@ time.sleep(7)
 
 
 #Download 12 videos, apparently sometimes is only 11..., to avoid that we should put at least 2 hashtags parameters
-
 videosURL=getTheHtml(driver)
-download12(videosURL,counter)
+downloadDozen(videosURL,counter)
 counter+=1
 
 
 
-confirmation= input("Do you want to download 12 videos more?: Type YES/NO \n")
-
 time.sleep(2)
+#Here we go to the end of the page to avoid problems when automatically clicking.
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
+confirmation="yes"
+while confirmation=="yes":
 
+    confirmation= input("Do you want to download 12 videos more?: Type YES/NO \n")
+    
+    if confirmation.lower().strip()!="yes":
+        confirmation="no"
 
-if confirmation.lower().strip()=="yes": 
-    try:
-        print("Intentando clickear")
+    if confirmation.lower().strip()=="yes": 
         try:
-            moreBtn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="main-content-general_search"]/div[2]/div[2]/button')))
-            driver.implicitly_wait(10)
+            print("Trying to click the more videos button")
+            try:
+                moreBtn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="main-content-general_search"]/div[2]/div[2]/button')))
+                driver.implicitly_wait(10)
+            except:
+                print("Could not find the more videos button.")
+
+            print("Got the more videos button succesfully")
+
+            try:
+                driver.execute_script("arguments[0].click();", moreBtn)
+                print("The more videos button was clicked")
+
+            except Exception as excp:
+                print(excp)
+            time.sleep(10)
+            videosURL=getTheHtml(driver)
+            downloadDozen(videosURL,counter)
+            counter+=1
+
+
         except:
-            print("Ni se pudo obtener el botón :( para tener 12 más")
+            print("There was an error trying to get the 12 videos")
+    else:
+        print("Thanks for using this software by CrisIntriago")  
 
-        print("Se obtuvo el botón")
-
-        try:
-            driver.execute_script("arguments[0].click();", moreBtn)
-            print("Se clickeó")
-        except Exception as excp:
-            print(excp)
-        time.sleep(10)
-        videosURL=getTheHtml(driver)
-        download12(videosURL,counter)
-        counter+=1
-
-
-    except:
-        print("Hubo un error al intentar cargar 12 vídeos más")
-else:
-    print("Thanks for using this software :)")  
-     
+print("Thanks for using this software by CrisIntriago")
 
 
 
