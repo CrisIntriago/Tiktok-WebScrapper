@@ -50,7 +50,7 @@ except:
 barraTEXTO= driver.find_element(By.NAME,"q")
 
 hashtags= input("Enter the hashtags for search, ideally at least 2: ")
-#hashtags= "#Tareas #humor #matematicas #universidad"
+#hashtags="#humor #tareas #universidad"
 
 
 driver.implicitly_wait(5)
@@ -67,42 +67,44 @@ download12(videosURL,counter)
 counter+=1
 
 
+confirmation= "yes"
+while confirmation=="yes":
+    confirmation= input("Do you want to download 12 videos more?: Type YES/NO \n")
 
-confirmation= input("Do you want to download 12 videos more?: Type YES/NO \n")
-
-time.sleep(2)
-driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 
 
-if confirmation.lower().strip()=="yes": 
-    try:
-        print("Intentando clickear")
+    if confirmation.lower().strip()=="yes": 
         try:
-            moreBtn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="main-content-general_search"]/div[2]/div[2]/button')))
-            driver.implicitly_wait(10)
+            print("Intentando clickear")
+            try:
+                moreBtn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="main-content-general_search"]/div[2]/div[2]/button')))
+                driver.implicitly_wait(10)
+            except:
+                print("Ni se pudo obtener el botón :( para tener 12 más")
+
+            print("Se obtuvo el botón")
+
+            try:
+                driver.execute_script("arguments[0].click();", moreBtn)
+                print("Se clickeó")
+            except Exception as excp:
+                print(excp)
+            time.sleep(10)
+            videosURL=getTheHtml(driver)
+            download12(videosURL,counter)
+            counter+=1
+
+
         except:
-            print("Ni se pudo obtener el botón :( para tener 12 más")
+            print("Hubo un error al intentar cargar 12 vídeos más")
+    else:
+        confirmation=="no"
+        
 
-        print("Se obtuvo el botón")
-
-        try:
-            driver.execute_script("arguments[0].click();", moreBtn)
-            print("Se clickeó")
-        except Exception as excp:
-            print(excp)
-        time.sleep(10)
-        videosURL=getTheHtml(driver)
-        download12(videosURL,counter)
-        counter+=1
-
-
-    except:
-        print("Hubo un error al intentar cargar 12 vídeos más")
-else:
-    print("Thanks for using this software :)")  
-     
-
+print("Thanks for using this software :)")  
 
 
 

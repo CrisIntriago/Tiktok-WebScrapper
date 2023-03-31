@@ -76,7 +76,7 @@ def downloadVideo(url,id):
     data = {
         'id': url,
         'locale': 'es',
-        'tt': 'NmJ3YWY0sss', ##IT CHANGES OVERTIME, GO TO CURLCONVERTER.COM AND GET A NEW ONE, its just that change
+        'tt': 'UmRUWEMz', ##IT CHANGES OVERTIME, GO TO CURLCONVERTER.COM AND GET A NEW ONE, its just that change
     }
 
     response = requests.post('https://ssstik.io/abc', params=params, headers=headers, data=data)
